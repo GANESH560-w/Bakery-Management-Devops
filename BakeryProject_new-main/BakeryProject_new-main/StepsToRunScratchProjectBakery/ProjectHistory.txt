@@ -1,0 +1,157 @@
+root@ip-172-31-5-246:~/BakeryProject/baker-1.0.0# history
+    1  git clone https://github.com/siddheshsomvanshi1/BakeryProject.git
+    2  ls
+    3  cd BakeryProject/
+    4  ls
+    5  cd baker-1.0.0/
+    6  ls
+    7  cd js
+    8  ls
+    9  nano main.js 
+   10  cd..
+   11  cd ..
+   12  ls
+   13  cd scss/
+   14  ls
+   15  cd ..
+   16  ls
+   17  cd contact.html
+   18  nano contact.html 
+   19  vim contact.html 
+   20  ls
+   21  cd BakeryProject/
+   22  cls
+   23  ls
+   24  cd baker-1.0.0/
+   25  mysql -h bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com -u admin -p
+   26  ls
+   27  cd backend-java/
+   28  ls
+   29  cd src
+   30  ls
+   31  nano DB.java 
+   32  vim DB.java 
+   33  cd ..
+   34  mysql -h bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com -u admin -p
+   35  cd ..
+   36  ls
+   37  cd js
+   38  ls
+   39  vim main.js 
+   40  ls
+   41  cd ..
+   42  ls
+   43  cd backend-java/
+   44  ls
+   45  cd src
+   46  l
+   47  vim DB.java 
+   48  c ..
+   49  cd.
+   50  cd .
+   51  cd ..
+   52  ls
+   53  cd .
+   54  cd ..
+   55  ls
+   56  cd backend-java/
+   57  l
+   58  pkill -f BackendServer
+   59  javac -cp "lib/mysql-connector-j-8.3.0.jar" -d out src/*.java
+   60  export DB_URL="jdbc:mysql://bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com:3306/bakery_db"
+   61  export DB_USER="admin"
+   62  export DB_PASS="admin123"
+   63  java -cp "out:lib/mysql-connector-j-8.3.0.jar" BackendServer
+   64  echo $DB_URL
+   65  java -cp "out:lib/mysql-connector-j-8.3.0.jar" BackendServer
+   66  ls
+   67  cd BakeryProject/
+   68  ls
+   69  cd baker-1.0.0/
+   70  ls
+   71  vim contact.html 
+   72  ls
+   73  tree
+   74  apt intall tree
+   75  ls
+   76  tree
+   77  apt install treeee
+   78  ls
+   79  tree
+   80  snap insall tree
+   81  snap install tree
+   82  tree
+   83  cd backend-java/
+   84  ls
+   85  mysql -h bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com -u admin -p
+   86  apt install mysql-client
+   87  apt install update -y
+   88  cd ..
+   89  ls
+   90  cd ..
+   91  ls
+   92  sudo apt install mysql-client -y
+   93  ls
+   94  cd  baker-1.0.0/
+   95  ls
+   96  mysql -h bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
+   97  sudo apt install mysql-client -y
+   98  mysql -h bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
+   99  sudo apt clean
+  100  apt update -y
+  101  apt install mysql-client -y
+  102  mysql -h bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
+  103  export DB_URL="jdbc:mariadb://bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com:3306/bakery_db"
+  104  ls
+  105  export DB_USER="admin"
+  106  export DB_PASS="admin123"
+  107  ls
+  108  cd BakeryProject/baker-1.0.0/backend-java
+  109  cd backend-java
+  110  javac -cp "lib/mysql-connector-j-8.3.0.jar" -d out src/*.java
+  111  sudo apt install openjdk-17-jdk -y
+  112  javac -cp "lib/mysql-connector-j-8.3.0.jar" -d out src/*.java
+  113  java -cp "out:lib/mysql-connector-j-8.3.0.jar" BackendServer
+  114  apt install nginx -y
+  115  sudo cp -r baker-1.0.0/* /var/www/html/
+  116  cd ..
+  117  ls
+  118  cd ..
+  119  sudo cp -r baker-1.0.0/* /var/www/html/
+  120  chown -R www-data:www-data /var/www/html
+  121  sudo chmod -R 755 /var/www/html
+  122  sudo systemctl start nginx
+  123  sudo systemctl enable nginx
+  124  ls
+  125  cd baker-1.0.0/
+  126  ls
+  127  cd js
+  128  ls
+  129  nano /var/www/html/js/main.js
+  130  ls
+  131  vim main.js 
+  132  ps aux | grep java
+  133  sudo netstat -tulpn | grep :8080
+  134  ls
+  135  cd ..
+  136  sudo netstat -tulpn | grep :8080
+  137  apt install netstat
+  138  sudo ss -tulpn | grep :8080
+  139  sudo apt install net-tools -y
+  140  sudo netstat -tulpn | grep :8080
+  141  java -cp "out:lib/mysql-connector-j-8.3.0.jar" BackendServer
+  142  ls
+  143  cd backend-java/
+  144  ls
+  145  java -cp "out:lib/mysql-connector-j-8.3.0.jar" BackendServer
+  146  cd ..cd .
+  147  cd .
+  148  cd ..
+  149  mysql -h bakery-db.cdqog8uqgnnt.ap-south-1.rds.amazonaws.com -uadmin -p
+  150  ls
+  151  cd BakeryProject/
+  152  echo $DB_URL
+  153  cd baker-1.0.0/
+  154  ls
+  155  echo $DB_URL
+  156  history
