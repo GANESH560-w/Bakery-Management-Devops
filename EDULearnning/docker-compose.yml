@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./edulearn-backend
+    container_name: edulearn-backend
+    ports:
+      - "5000:5000"
+    environment:
+      # AWS RDS Endpoint (Replace with your actual RDS endpoint)
+      - DATABASE_URL=${DATABASE_URL:-postgresql://dbadmin:SecurePassword123@your-rds-endpoint.aws.com:5432/edulearn}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your_super_secret_key}
+    restart: always
+
+  frontend:
+    build: .
+    container_name: edulearn-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always

@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: edulearn-frontend
+spec:
+  selector:
+    app: edulearn-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edulearn-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: edulearn-frontend
+  template:
+    metadata:
+      labels:
+        app: edulearn-frontend
+    spec:
+      containers:
+      - name: edulearn-frontend
+        image: yourusername/edulearn-frontend:latest
+        ports:
+        - containerPort: 80
