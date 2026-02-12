@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Pune Bakery - Our Products</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="img/favicon.ico" rel="icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .cart-badge { position: absolute; top: -5px; right: -10px; padding: 2px 6px; border-radius: 50%; background: #e51a4b; color: white; font-size: 10px; }
+        .product-item img { height: 250px; object-fit: cover; }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+        <a href="index.html" class="navbar-brand ms-4 ms-lg-0">
+            <h1 class="text-primary m-0">Pune Bakery</h1>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav mx-auto p-4 p-lg-0">
+                <a href="index.html" class="nav-item nav-link">Home</a>
+                <a href="about.html" class="nav-item nav-link">About</a>
+                <a href="product.html" class="nav-item nav-link active">Products</a>
+                <a href="contact.html" class="nav-item nav-link">Contact</a>
+                <a href="employee_login.html" id="loginLink" class="nav-item nav-link">Employee Login</a>
+                <a href="admin_login.html" class="nav-item nav-link">Admin</a>
+                <a href="#" id="logoutBtn" class="nav-item nav-link" style="display: none;">Logout</a>
+            </div>
+            <div class="d-none d-lg-flex align-items-center">
+                <button type="button" class="btn btn-primary position-relative me-4" data-bs-toggle="modal" data-bs-target="#cartModal">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span id="cartCount" class="cart-badge">0</span>
+                </button>
+                <div class="flex-shrink-0 btn-lg-square border border-light rounded-circle">
+                    <i class="fa fa-phone text-primary"></i>
+                </div>
+                <div class="ps-3">
+                    <small class="text-primary mb-0">Call Us</small>
+                    <p class="text-light fs-5 mb-0">+91 20 345 6789</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header py-6 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container text-center pt-5 pb-3">
+            <h1 class="display-4 text-white animated slideInDown mb-3">Our Menu</h1>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Product Start -->
+    <div class="container-xxl bg-light my-6 py-6 pt-0">
+        <div class="container">
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <p class="text-primary text-uppercase mb-2">// Bakery Products</p>
+                <h1 class="display-6 mb-4">Explore Our Delicious Bakery Products</h1>
+            </div>
+            <div id="productsDisplay" class="row g-4">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Your Cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cartItems" class="text-dark">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                    <div id="cartTotal" class="text-end mt-3 fw-bold text-dark"></div>
+                    <hr>
+                    
+                    <!-- Step 1: Customer Details -->
+                    <div id="step1">
+                        <form id="orderForm" class="mt-4">
+                            <h6 class="text-dark">Place Your Order</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <input type="text" id="custName" class="form-control" placeholder="Your Name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="email" id="custEmail" class="form-control" placeholder="Your Email" required>
+                                </div>
+                                <div class="col-12">
+                                    <textarea id="custAddress" class="form-control" rows="2" placeholder="Delivery Address" required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" id="btnNextToOTP" class="btn btn-primary w-100">Confirm Order & Get OTP</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: OTP Verification -->
+                    <div id="step2" style="display: none;">
+                        <h6 class="text-dark">Verify OTP</h6>
+                        <p class="small text-muted">A verification code has been sent to your email.</p>
+                        <div class="mb-3">
+                            <input type="text" id="otpInput" class="form-control" placeholder="Enter 6-digit OTP">
+                        </div>
+                        <button type="button" id="btnVerifyOTP" class="btn btn-primary w-100">Verify OTP</button>
+                        <button type="button" class="btn btn-link w-100 mt-2 btn-back" data-back-to="step1">Back to Details</button>
+                    </div>
+
+                    <!-- Step 3: Payment -->
+                    <div id="step3" style="display: none;">
+                        <h6 class="text-dark text-center">Scan QR to Pay</h6>
+                        <div class="text-center mb-3">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PuneBakeryPayment" alt="Payment QR Code" class="img-fluid border p-2">
+                            <p class="mt-2 fw-bold">Amount to Pay: <span id="paymentAmount">₹0</span></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-dark">Enter UTR / Transaction ID</label>
+                            <input type="text" id="utrInput" class="form-control" placeholder="Enter UTR Number" required>
+                        </div>
+                        <button type="button" id="btnCompletePayment" class="btn btn-success w-100">Submit Payment & Place Order</button>
+                        <button type="button" class="btn btn-link w-100 mt-2 btn-back" data-back-to="step2">Back to OTP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Status Section -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="bg-white p-5 rounded shadow-sm">
+                    <h4 class="mb-4 text-center text-dark">Check Your Order Status</h4>
+                    <div class="input-group mb-3">
+                        <input type="email" id="checkEmail" class="form-control" placeholder="Enter your email to check orders">
+                        <button class="btn btn-primary" id="checkStatusBtn">Check Status</button>
+                    </div>
+                    <div id="orderStatusList" class="text-dark"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let cart = [];
+        
+        $(document).ready(function() {
+            // Check employee login
+            if (localStorage.getItem('isEmployee') !== 'true') {
+                window.location.href = 'employee_login.html';
+            } else {
+                $('#logoutBtn').show();
+                $('#loginLink').hide();
+            }
+
+            $('#logoutBtn').click(function() {
+                localStorage.removeItem('isEmployee');
+                localStorage.removeItem('empUser');
+                window.location.href = 'employee_login.html';
+            });
+
+            loadProducts();
+
+            function loadProducts() {
+                fetch('http://127.0.0.1:8080/api/products')
+                    .then(res => res.json())
+                    .then(products => {
+                        let html = '';
+                        products.forEach(p => {
+                            html += `
+                                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                    <div class="product-item d-flex flex-column bg-white rounded overflow-hidden h-100">
+                                        <div class="text-center p-4">
+                                            <div class="d-inline-block border border-primary rounded-pill px-3 mb-3">₹${p.price}</div>
+                                            <h3 class="mb-3">${p.name}</h3>
+                                            <p>Available Quantity: ${p.quantity}</p>
+                                        </div>
+                                        <div class="position-relative mt-auto">
+                                            <img class="img-fluid" src="${p.image}" alt="${p.name}">
+                                            <div class="product-overlay">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <input type="number" value="1" min="1" max="${p.quantity}" class="form-control w-25 me-2 qty-input" id="qty-${p.id}">
+                                                    <button class="btn btn-primary add-to-cart" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">Add to Cart</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        });
+                        $('#productsDisplay').html(html);
+                    });
+            }
+
+            $(document).on('click', '.add-to-cart', function() {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+                const price = $(this).data('price');
+                const qty = parseInt($(`#qty-${id}`).val());
+
+                const existing = cart.find(item => item.id === id);
+                if (existing) {
+                    existing.quantity += qty;
+                } else {
+                    cart.push({ id, name, price, quantity: qty });
+                }
+                updateCart();
+                alert('Added to cart!');
+            });
+
+            function updateCart() {
+                $('#cartCount').text(cart.length);
+                let html = '';
+                let total = 0;
+                cart.forEach((item, index) => {
+                    const subtotal = item.price * item.quantity;
+                    total += subtotal;
+                    html += `
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>${item.name} x ${item.quantity}</span>
+                            <span>₹${subtotal} <button class="btn btn-sm text-danger remove-item" data-index="${index}">&times;</button></span>
+                        </div>`;
+                });
+                $('#cartItems').html(html || '<p>Cart is empty</p>');
+                $('#cartTotal').text(`Total: ₹${total}`);
+            }
+
+            $(document).on('click', '.remove-item', function() {
+                cart.splice($(this).data('index'), 1);
+                updateCart();
+            });
+
+            // Step Transitions
+            $('#btnNextToOTP').click(function() {
+                if (cart.length === 0) return alert('Cart is empty');
+                if (!$('#custName').val() || !$('#custEmail').val() || !$('#custAddress').val()) {
+                    return alert('Please fill all details');
+                }
+
+                const email = $('#custEmail').val();
+                // Call backend to send OTP
+                fetch('http://127.0.0.1:8080/api/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                }).then(res => res.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        $('#step1').hide();
+                        $('#step2').show();
+                    } else {
+                        alert('Error sending OTP: ' + data.message);
+                    }
+                });
+            });
+
+            $('#btnVerifyOTP').click(function() {
+                const otp = $('#otpInput').val();
+                const email = $('#custEmail').val();
+                if (!otp) return alert('Please enter OTP');
+
+                fetch('http://127.0.0.1:8080/api/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, otp: otp })
+                }).then(res => res.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                        $('#paymentAmount').text(`₹${total}`);
+                        $('#step2').hide();
+                        $('#step3').show();
+                    } else {
+                        alert('Invalid OTP. Please try again.');
+                    }
+                });
+            });
+
+            $('.btn-back').click(function() {
+                const target = $(this).data('back-to');
+                $('#step1, #step2, #step3').hide();
+                $(`#${target}`).show();
+            });
+
+            $('#btnCompletePayment').click(function() {
+                const utr = $('#utrInput').val();
+                if (!utr) return alert('Please enter UTR number');
+
+                const order = {
+                    customer_name: $('#custName').val(),
+                    customer_email: $('#custEmail').val(),
+                    address: $('#custAddress').val(),
+                    items: cart,
+                    total_cost: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                    utr: utr
+                };
+
+                fetch('http://127.0.0.1:8080/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(order)
+                }).then(res => res.json())
+                .then(data => {
+                    alert(data.message + '\nUTR: ' + utr);
+                    cart = [];
+                    updateCart();
+                    // Reset modal steps
+                    $('#step1').show();
+                    $('#step2, #step3').hide();
+                    $('#orderForm')[0].reset();
+                    $('#otpInput').val('');
+                    $('#utrInput').val('');
+                    $('#cartModal').modal('hide');
+                });
+            });
+
+            $('#orderForm').submit(function(e) {
+                e.preventDefault();
+                $('#btnNextToOTP').click();
+            });
+
+            $('#checkStatusBtn').click(function() {
+                const email = $('#checkEmail').val();
+                if (!email) return;
+
+                fetch('http://127.0.0.1:8080/api/admin/orders') // In real app, use user-specific endpoint
+                    .then(res => res.json())
+                    .then(orders => {
+                        const myOrders = orders.filter(o => o.email === email);
+                        let html = '';
+                        myOrders.forEach(o => {
+                            html += `
+                                <div class="border p-3 mb-2 rounded">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Order #${o.id}</strong>
+                                        <span class="badge bg-primary">${o.status}</span>
+                                    </div>
+                                    <div class="mt-2 text-muted small">
+                                        Admin Message: ${o.message || 'Waiting for update...'}
+                                    </div>
+                                </div>`;
+                        });
+                        $('#orderStatusList').html(html || '<p class="text-center">No orders found for this email.</p>');
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
