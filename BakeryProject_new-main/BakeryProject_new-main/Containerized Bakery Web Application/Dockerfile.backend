@@ -1,0 +1,14 @@
+# Stage 1: Build
+FROM openjdk:17-jdk-slim AS build
+WORKDIR /app
+COPY backend/ /app/
+RUN mkdir -p out
+RUN javac -cp "lib/*" -d out src/*.java
+
+# Stage 2: Run
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/out /app/out
+COPY --from=build /app/lib /app/lib
+EXPOSE 8080
+CMD ["java", "-cp", "out:lib/*", "src.Server"]

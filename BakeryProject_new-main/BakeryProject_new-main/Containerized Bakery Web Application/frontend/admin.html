@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Artisan Bakery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair+Display', serif; }
+        .nav-link.active { background-color: #d97706; color: white; }
+    </style>
+</head>
+<body class="bg-gray-50 text-stone-900 flex">
+
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="fixed inset-0 z-[200] bg-stone-900 flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-md rounded-3xl p-10 shadow-2xl text-center">
+            <h2 class="text-3xl font-serif mb-2">Admin / Employee Login</h2>
+            <p class="text-stone-400 mb-8">Access the Artisan Bakery operations dashboard</p>
+            <form id="login-form" class="space-y-4">
+                <select id="role-select" class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20 text-center">
+                    <option value="admin">Admin</option>
+                    <option value="employee">Employee</option>
+                </select>
+                <input type="text" id="username-input" placeholder="Username" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20 text-center">
+                <input type="password" id="password-input" placeholder="Password" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20 text-center">
+                <button type="submit" class="w-full bg-stone-900 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-amber-600 transition">Unlock Dashboard</button>
+            </form>
+            <p class="mt-6 text-xs text-stone-400">Protected Area &bull; Unauthorized access restricted</p>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-stone-900 text-white h-screen fixed hidden md:block" id="admin-sidebar">
+        <div class="p-8">
+            <h2 class="text-2xl font-serif font-bold">Artisan<span class="text-amber-500">Admin</span></h2>
+        </div>
+        <nav class="mt-8">
+            <a href="#" onclick="showSection('dashboard')" class="nav-link flex items-center px-8 py-4 transition active" id="nav-dashboard"><i class="fa-solid fa-chart-line mr-3"></i> Dashboard</a>
+            <a href="#" onclick="showSection('orders')" class="nav-link flex items-center px-8 py-4 hover:bg-white/10 transition" id="nav-orders"><i class="fa-solid fa-shopping-bag mr-3"></i> Orders</a>
+            <a href="#" onclick="showSection('products')" class="nav-link flex items-center px-8 py-4 hover:bg-white/10 transition" id="nav-products"><i class="fa-solid fa-bread-slice mr-3"></i> Products</a>
+            <a href="#" onclick="showSection('customers')" class="nav-link flex items-center px-8 py-4 hover:bg-white/10 transition" id="nav-customers"><i class="fa-solid fa-users mr-3"></i> Customers</a>
+            <a href="#" onclick="showSection('reports')" class="nav-link flex items-center px-8 py-4 hover:bg-white/10 transition" id="nav-reports"><i class="fa-solid fa-file-invoice-dollar mr-3"></i> Reports</a>
+            <a href="#" onclick="logout()" class="flex items-center px-8 py-4 hover:bg-red-500/20 transition mt-20 text-stone-400"><i class="fa-solid fa-sign-out-alt mr-3"></i> Logout</a>
+            <a href="index.html" class="flex items-center px-8 py-4 hover:bg-white/10 transition text-stone-400"><i class="fa-solid fa-arrow-left mr-3"></i> Back to Site</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 flex-grow p-10 hidden" id="admin-main">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="section">
+            <h1 class="text-4xl font-serif mb-10">Analytics Overview</h1>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <p class="text-stone-400 font-bold text-xs uppercase tracking-widest mb-2">Total Orders</p>
+                    <h3 id="total-orders-count" class="text-4xl font-bold">0</h3>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <p class="text-stone-400 font-bold text-xs uppercase tracking-widest mb-2">Total Revenue</p>
+                    <h3 id="total-revenue" class="text-4xl font-bold text-amber-600">$0.00</h3>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <p class="text-stone-400 font-bold text-xs uppercase tracking-widest mb-2">Avg Order Value</p>
+                    <h3 id="avg-order-value" class="text-4xl font-bold text-stone-800">$0.00</h3>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <p class="text-stone-400 font-bold text-xs uppercase tracking-widest mb-2">Conversion Rate</p>
+                    <h3 id="conversion-rate" class="text-4xl font-bold text-stone-800">3.2%</h3>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-8">
+                    <h4 class="text-xl font-bold mb-6">Sales Distribution</h4>
+                    <canvas id="salesChart" height="200"></canvas>
+                </div>
+                <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-8">
+                    <h4 class="text-xl font-bold mb-6">Payment Mix</h4>
+                    <canvas id="paymentChart" height="200"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-8">
+                <h4 class="text-xl font-bold mb-6">Recent Activity</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-stone-400 border-b">
+                                <th class="pb-4 font-bold text-xs uppercase tracking-widest">ID</th>
+                                <th class="pb-4 font-bold text-xs uppercase tracking-widest">Customer</th>
+                                <th class="pb-4 font-bold text-xs uppercase tracking-widest">Amount</th>
+                                <th class="pb-4 font-bold text-xs uppercase tracking-widest">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-orders-table">
+                            <!-- Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders-section" class="section hidden">
+            <h1 class="text-4xl font-serif mb-10">Order Management</h1>
+            <div class="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-stone-50 border-b">
+                        <tr>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">ID</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Customer Details</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Payment</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Total</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Status</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-orders-table">
+                        <!-- Injected -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products-section" class="section hidden">
+            <div class="flex justify-between items-center mb-10">
+                <h1 class="text-4xl font-serif">Inventory</h1>
+                <button onclick="openAddProductModal()" class="bg-stone-900 text-white px-8 py-3 rounded-2xl hover:bg-amber-600 transition shadow-lg font-bold"><i class="fa-solid fa-plus mr-2"></i> Add Product</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="admin-product-list">
+                <!-- Injected -->
+            </div>
+        </section>
+
+        <!-- Customers Section -->
+        <section id="customers-section" class="section hidden">
+            <h1 class="text-4xl font-serif mb-10">Customer History</h1>
+            <div class="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-stone-50 border-b">
+                        <tr>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Name</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Contact</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Total Spent</th>
+                            <th class="p-6 font-bold text-xs uppercase tracking-widest text-stone-400">Last Order</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customers-table">
+                        <!-- Injected -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="reports-section" class="section hidden">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
+                <h1 class="text-4xl font-serif">Sales Reports</h1>
+                <button onclick="exportToCSV()" class="bg-stone-900 text-white px-8 py-3 rounded-2xl hover:bg-amber-600 transition shadow-lg font-bold"><i class="fa-solid fa-download mr-2"></i> Export CSV</button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-8">
+                    <h4 class="text-xl font-bold mb-6">Order Status</h4>
+                    <canvas id="statusChart" height="220"></canvas>
+                </div>
+                <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-8">
+                    <h4 class="text-xl font-bold mb-6">Inventory Categories</h4>
+                    <canvas id="categoryChart" height="220"></canvas>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-8">
+                <h4 class="text-xl font-bold mb-6">Daily Ledger</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-stone-400 border-b">
+                                <th class="pb-4 font-bold text-xs uppercase tracking-widest">Date</th>
+                                <th class="pb-4 font-bold text-xs uppercase tracking-widest">Orders</th>
+                                <th class="pb-4 font-bold text-xs uppercase tracking-widest">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-stone-900/40 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl">
+            <h3 id="modal-title" class="text-2xl font-serif mb-6">Product Details</h3>
+            <form id="product-form" class="space-y-4">
+                <input type="hidden" id="p-id">
+                <input type="text" id="p-name" placeholder="Product Name" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20">
+                <select id="p-category" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20">
+                    <option value="">Select Category</option>
+                    <option value="Breads">Breads</option>
+                    <option value="Cakes">Cakes</option>
+                    <option value="Pastries">Pastries</option>
+                    <option value="Puffs">Puffs</option>
+                    <option value="Cookies">Cookies</option>
+                </select>
+                <input type="number" step="0.01" id="p-price" placeholder="Price ($)" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20">
+                <input type="text" id="p-image" placeholder="Image URL" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20">
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-grow bg-amber-600 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-amber-700 transition">Save Product</button>
+                    <button type="button" onclick="closeProductModal()" class="px-8 py-4 border rounded-xl font-bold hover:bg-stone-50 transition">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const API_URL = window.location.origin;
+        let salesChart;
+        let paymentChart;
+        let statusChart;
+        let categoryChart;
+
+        $(document).ready(() => {
+            if (localStorage.getItem('adminToken')) {
+                unlockDashboard();
+            }
+        });
+
+        $('#login-form').submit(async function(e) {
+            e.preventDefault();
+            const role = $('#role-select').val();
+            const username = $('#username-input').val().trim();
+            const password = $('#password-input').val().trim();
+            const endpoint = role === 'admin' ? '/api/admin/login' : '/api/employee/login';
+
+            try {
+                const res = await $.ajax({
+                    url: `${API_URL}${endpoint}`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ username, password })
+                });
+                if (res.status === 'ok') {
+                    localStorage.setItem('adminToken', res.token);
+                    unlockDashboard();
+                    return;
+                }
+                alert(res.message || 'Invalid credentials');
+            } catch (error) {
+                alert('Login failed. Check server connection.');
+            }
+        });
+
+        function unlockDashboard() {
+            $('#login-overlay').addClass('hidden');
+            $('#admin-main, #admin-sidebar').removeClass('hidden');
+            showSection('dashboard');
+        }
+
+        function logout() {
+            localStorage.removeItem('adminToken');
+            window.location.reload();
+        }
+
+        function showSection(id) {
+            $('.section').addClass('hidden');
+            $(`#${id}-section`).removeClass('hidden');
+            $('.nav-link').removeClass('active');
+            $(`#nav-${id}`).addClass('active');
+
+            if (id === 'dashboard') loadDashboard();
+            if (id === 'orders') loadOrders();
+            if (id === 'products') loadProducts();
+            if (id === 'customers') loadCustomers();
+            if (id === 'reports') loadReports();
+        }
+
+        function formatCurrency(value) {
+            return `$${Number(value || 0).toFixed(2)}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString();
+        }
+
+        function encodeProduct(product) {
+            return encodeURIComponent(JSON.stringify(product));
+        }
+
+        function renderStatusBadge(status) {
+            const label = escapeHtml(status || 'pending');
+            return `<span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold uppercase tracking-widest">${label}</span>`;
+        }
+
+        async function fetchOrders() {
+            return $.get(`${API_URL}/api/admin/orders`);
+        }
+
+        async function fetchProducts() {
+            return $.get(`${API_URL}/api/products`);
+        }
+
+        async function loadDashboard() {
+            try {
+                const [orders, products] = await Promise.all([fetchOrders(), fetchProducts()]);
+                const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+                const delivered = orders.filter(order => order.status === 'delivered').length;
+
+                $('#total-orders-count').text(orders.length);
+                $('#total-revenue').text(formatCurrency(revenue));
+                $('#avg-order-value').text(formatCurrency(orders.length ? revenue / orders.length : 0));
+                $('#conversion-rate').text(`${orders.length ? ((delivered / orders.length) * 100).toFixed(1) : '0.0'}%`);
+
+                const tbody = $('#recent-orders-table');
+                tbody.empty();
+                orders.slice(0, 5).forEach(order => {
+                    tbody.append(`
+                        <tr class="border-b hover:bg-stone-50 transition">
+                            <td class="py-4 font-mono text-sm">#${order.id}</td>
+                            <td class="py-4 font-bold">${escapeHtml(order.name)}</td>
+                            <td class="py-4 text-amber-600 font-bold">${formatCurrency(order.total)}</td>
+                            <td class="py-4">${renderStatusBadge(order.status)}</td>
+                        </tr>
+                    `);
+                });
+
+                renderDashboardCharts(orders, products);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function renderDashboardCharts(orders, products) {
+            const salesCanvas = document.getElementById('salesChart');
+            const paymentCanvas = document.getElementById('paymentChart');
+            if (!salesCanvas || !paymentCanvas) {
+                return;
+            }
+
+            const salesMap = {};
+            orders.forEach(order => {
+                const key = formatDate(order.created_at);
+                salesMap[key] = (salesMap[key] || 0) + Number(order.total || 0);
+            });
+            const lastSevenDays = Object.keys(salesMap).slice(-7);
+            const salesValues = lastSevenDays.map(day => salesMap[day]);
+
+            if (salesChart) salesChart.destroy();
+            salesChart = new Chart(salesCanvas, {
+                type: 'line',
+                data: {
+                    labels: lastSevenDays.length ? lastSevenDays : ['No Sales'],
+                    datasets: [{
+                        data: salesValues.length ? salesValues : [0],
+                        borderColor: '#d97706',
+                        backgroundColor: 'rgba(217, 119, 6, 0.15)',
+                        fill: true,
+                        tension: 0.35
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            const paymentMap = {};
+            orders.forEach(order => {
+                const key = order.payment || 'Unknown';
+                paymentMap[key] = (paymentMap[key] || 0) + 1;
+            });
+
+            if (paymentChart) paymentChart.destroy();
+            paymentChart = new Chart(paymentCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(paymentMap).length ? Object.keys(paymentMap) : ['No Orders'],
+                    datasets: [{
+                        data: Object.values(paymentMap).length ? Object.values(paymentMap) : [1],
+                        backgroundColor: ['#d97706', '#292524', '#f59e0b', '#57534e']
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        async function loadOrders() {
+            try {
+                const orders = await fetchOrders();
+                const tbody = $('#all-orders-table');
+                tbody.empty();
+                orders.forEach(order => {
+                    tbody.append(`
+                        <tr class="border-b hover:bg-stone-50">
+                            <td class="p-6 font-mono text-sm">#${order.id}</td>
+                            <td class="p-6">
+                                <p class="font-bold">${escapeHtml(order.name)}</p>
+                                <p class="text-stone-400 text-xs">${escapeHtml(order.email)} | ${escapeHtml(order.phone)}</p>
+                                <p class="text-stone-400 text-[10px] mt-1 italic">${escapeHtml(order.address)}</p>
+                            </td>
+                            <td class="p-6">
+                                <span class="uppercase text-[10px] font-bold px-2 py-1 bg-stone-100 rounded">${escapeHtml(order.payment)}</span>
+                                ${order.coupon ? `<p class="text-[10px] text-green-600 font-bold mt-1">Code: ${escapeHtml(order.coupon)}</p>` : ''}
+                            </td>
+                            <td class="p-6 font-bold text-amber-600">${formatCurrency(order.total)}</td>
+                            <td class="p-6">
+                                <select onchange="updateStatus(${order.id}, this.value)" class="p-2 bg-stone-100 rounded-xl text-xs font-bold outline-none focus:ring-1 focus:ring-amber-600">
+                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                                    <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                                </select>
+                            </td>
+                            <td class="p-6">
+                                <button onclick="deleteOrder(${order.id})" class="text-stone-300 hover:text-red-500 transition"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        </tr>
+                    `);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                const orders = await fetchOrders();
+                const customers = {};
+
+                orders.forEach(order => {
+                    if (!customers[order.email]) {
+                        customers[order.email] = {
+                            name: order.name,
+                            phone: order.phone,
+                            total: 0,
+                            last: order.created_at
+                        };
+                    }
+                    customers[order.email].total += Number(order.total || 0);
+                    if (new Date(order.created_at) > new Date(customers[order.email].last)) {
+                        customers[order.email].last = order.created_at;
+                    }
+                });
+
+                const tbody = $('#customers-table');
+                tbody.empty();
+                Object.entries(customers).forEach(([email, customer]) => {
+                    tbody.append(`
+                        <tr class="border-b hover:bg-stone-50 transition">
+                            <td class="p-6 font-bold">${escapeHtml(customer.name)}</td>
+                            <td class="p-6 text-sm text-stone-500">${escapeHtml(email)}<br>${escapeHtml(customer.phone)}</td>
+                            <td class="p-6 font-bold text-amber-600">${formatCurrency(customer.total)}</td>
+                            <td class="p-6 text-xs text-stone-400">${formatDate(customer.last)}</td>
+                        </tr>
+                    `);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function loadReports() {
+            try {
+                const [orders, products] = await Promise.all([fetchOrders(), fetchProducts()]);
+                const statusCanvas = document.getElementById('statusChart');
+                const categoryCanvas = document.getElementById('categoryChart');
+                const ledgerTable = $('#ledger-table');
+
+                const statusMap = {};
+                orders.forEach(order => {
+                    const key = order.status || 'pending';
+                    statusMap[key] = (statusMap[key] || 0) + 1;
+                });
+
+                if (statusChart) statusChart.destroy();
+                statusChart = new Chart(statusCanvas, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(statusMap).length ? Object.keys(statusMap) : ['No Orders'],
+                        datasets: [{
+                            data: Object.values(statusMap).length ? Object.values(statusMap) : [1],
+                            backgroundColor: ['#d97706', '#f59e0b', '#57534e', '#16a34a']
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+
+                const categoryMap = {};
+                products.forEach(product => {
+                    const key = product.category || 'Uncategorized';
+                    categoryMap[key] = (categoryMap[key] || 0) + 1;
+                });
+
+                if (categoryChart) categoryChart.destroy();
+                categoryChart = new Chart(categoryCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(categoryMap).length ? Object.keys(categoryMap) : ['No Products'],
+                        datasets: [{
+                            data: Object.values(categoryMap).length ? Object.values(categoryMap) : [0],
+                            backgroundColor: '#d97706',
+                            borderRadius: 10
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, precision: 0 } }
+                    }
+                });
+
+                const ledger = {};
+                orders.forEach(order => {
+                    const key = formatDate(order.created_at);
+                    if (!ledger[key]) {
+                        ledger[key] = { orders: 0, revenue: 0 };
+                    }
+                    ledger[key].orders += 1;
+                    ledger[key].revenue += Number(order.total || 0);
+                });
+
+                ledgerTable.empty();
+                Object.keys(ledger).reverse().forEach(date => {
+                    ledgerTable.append(`
+                        <tr class="border-b hover:bg-stone-50">
+                            <td class="py-4">${date}</td>
+                            <td class="py-4 font-bold">${ledger[date].orders}</td>
+                            <td class="py-4 text-amber-600 font-bold">${formatCurrency(ledger[date].revenue)}</td>
+                        </tr>
+                    `);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function exportToCSV() {
+            $.get(`${API_URL}/api/admin/orders`, function(orders) {
+                let csv = 'ID,Name,Email,Phone,Total,Status,Payment,Date\n';
+                orders.forEach(order => {
+                    csv += `${order.id},"${String(order.name || '').replace(/"/g, '""')}",${order.email},${order.phone},${order.total},${order.status},${order.payment},${order.created_at}\n`;
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `bakery_report_${new Date().toISOString().slice(0, 10)}.csv`);
+                link.click();
+            });
+        }
+
+        async function updateStatus(id, status) {
+            try {
+                await $.ajax({
+                    url: `${API_URL}/api/admin/orders/update`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id, status })
+                });
+                if (!$('#dashboard-section').hasClass('hidden')) loadDashboard();
+                if (!$('#reports-section').hasClass('hidden')) loadReports();
+            } catch (error) {
+                alert('Unable to update order status.');
+            }
+        }
+
+        async function deleteOrder(id) {
+            if (!confirm('Are you sure you want to remove this order?')) {
+                return;
+            }
+            try {
+                await $.ajax({
+                    url: `${API_URL}/api/admin/orders/delete`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id })
+                });
+                loadOrders();
+                loadDashboard();
+                loadCustomers();
+                if (!$('#reports-section').hasClass('hidden')) loadReports();
+            } catch (error) {
+                alert('Unable to delete order.');
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const products = await fetchProducts();
+                const container = $('#admin-product-list');
+                container.empty();
+                products.forEach(product => {
+                    container.append(`
+                        <div class="bg-white rounded-3xl shadow-sm border border-stone-100 p-4 flex gap-4 items-center group hover:shadow-lg transition-all duration-300">
+                            <img src="${escapeHtml(product.image)}" class="w-20 h-20 object-cover rounded-2xl shadow-sm">
+                            <div class="flex-grow">
+                                <span class="text-amber-600 text-[10px] font-bold uppercase tracking-widest">${escapeHtml(product.category)}</span>
+                                <h4 class="font-bold text-stone-800">${escapeHtml(product.name)}</h4>
+                                <p class="text-stone-400 font-bold">${formatCurrency(product.price)}</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <button onclick="editProduct('${encodeProduct(product)}')" class="p-2 text-stone-300 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteProduct(${product.id})" class="p-2 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    `);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function openAddProductModal() {
+            $('#modal-title').text('New Product');
+            $('#product-form')[0].reset();
+            $('#p-id').val('');
+            $('#product-modal').removeClass('hidden');
+        }
+
+        function editProduct(encodedProduct) {
+            const product = JSON.parse(decodeURIComponent(encodedProduct));
+            $('#modal-title').text('Update Product');
+            $('#p-id').val(product.id);
+            $('#p-name').val(product.name);
+            $('#p-category').val(product.category);
+            $('#p-price').val(product.price);
+            $('#p-image').val(product.image);
+            $('#product-modal').removeClass('hidden');
+        }
+
+        function closeProductModal() {
+            $('#product-modal').addClass('hidden');
+        }
+
+        $('#product-form').submit(async function(e) {
+            e.preventDefault();
+            const id = $('#p-id').val();
+            const payload = {
+                name: $('#p-name').val().trim(),
+                category: $('#p-category').val(),
+                price: parseFloat($('#p-price').val()),
+                image: $('#p-image').val().trim()
+            };
+            if (id) {
+                payload.id = parseInt(id, 10);
+            }
+
+            try {
+                await $.ajax({
+                    url: `${API_URL}${id ? '/api/admin/products/update' : '/api/admin/products/add'}`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload)
+                });
+                closeProductModal();
+                loadProducts();
+                loadDashboard();
+                if (!$('#reports-section').hasClass('hidden')) loadReports();
+            } catch (error) {
+                alert('Unable to save product.');
+            }
+        });
+
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure you want to remove this product?')) {
+                return;
+            }
+            try {
+                await $.ajax({
+                    url: `${API_URL}/api/admin/products/delete`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id })
+                });
+                loadProducts();
+                loadDashboard();
+                if (!$('#reports-section').hasClass('hidden')) loadReports();
+            } catch (error) {
+                alert('Unable to delete product.');
+            }
+        }
+    </script>
+</body>
+</html>

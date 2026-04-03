@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bakery-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bakery-db
+  template:
+    metadata:
+      labels:
+        app: bakery-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bakery-secrets
+              key: mysql-root-password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: bakery-config
+              key: MYSQL_DATABASE
+        ports:
+        - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bakery-db-service
+spec:
+  selector:
+    app: bakery-db
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306

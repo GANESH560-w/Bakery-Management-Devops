@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Artisan Bakery - Handcrafted Indian bakery products, breads, cakes, and pastries. Freshly baked daily with organic ingredients.">
+    <meta name="keywords" content="bakery, artisan bread, indian bakery, cakes, pastries, online order, sourdough">
+    <title>Artisan Bakery | Freshly Baked Excellence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair+Display', serif; }
+        .product-card:hover .add-to-cart-btn { transform: translateY(0); opacity: 1; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .toast { transform: translateY(100px); transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toast.show { transform: translateY(0); }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-900">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast fixed bottom-8 right-8 z-[200] bg-stone-900 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-4">
+        <div class="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center">
+            <i class="fa-solid fa-check text-xs"></i>
+        </div>
+        <span id="toast-msg" class="font-medium">Item added to basket!</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300 py-4 shadow-sm">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="#" class="text-3xl font-serif font-bold tracking-tight text-amber-900">Artisan<span class="text-amber-600">Bakery</span></a>
+            <div class="hidden md:flex space-x-8 font-medium">
+                <a href="#hero" class="hover:text-amber-600 transition">Home</a>
+                <a href="#shop" class="hover:text-amber-600 transition">Shop</a>
+                <a href="#track" class="hover:text-amber-600 transition">Track Order</a>
+                <a href="#contact" class="hover:text-amber-600 transition">Contact</a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <div class="relative cursor-pointer" onclick="toggleCart()">
+                    <i class="fa-solid fa-cart-shopping text-xl hover:text-amber-600 transition"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </div>
+                <a href="admin.html" class="hidden md:block text-stone-500 hover:text-stone-900" title="Admin / Employee Login"><i class="fa-solid fa-user-lock"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1600&q=80" class="w-full h-full object-cover brightness-50" alt="Hero">
+        </div>
+        <div class="container mx-auto px-6 relative z-10 text-center text-white" data-aos="fade-up">
+            <span class="uppercase tracking-[0.3em] text-sm font-semibold mb-4 block text-amber-400">Baked fresh every morning</span>
+            <h1 class="text-6xl md:text-8xl mb-8 leading-tight">Tradition in <br> Every Single Bite</h1>
+            <a href="#shop" class="bg-amber-600 hover:bg-amber-700 text-white px-10 py-4 rounded-full text-lg font-semibold transition-all shadow-xl hover:scale-105 inline-block">Explore Our Menu</a>
+        </div>
+    </section>
+
+    <!-- Shop Section -->
+    <section id="shop" class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl md:text-5xl mb-4">Our Artisan Selection</h2>
+                    <p class="text-stone-500 max-w-md">Handcrafted using traditional methods and the finest organic ingredients sourced from local farms.</p>
+                </div>
+                <div class="flex flex-wrap gap-4" data-aos="fade-left">
+                    <button onclick="filterProducts('All')" class="category-btn active px-6 py-2 rounded-full border border-stone-200 hover:border-amber-600 hover:text-amber-600 transition bg-white shadow-sm">All Items</button>
+                    <button onclick="filterProducts('Breads')" class="category-btn px-6 py-2 rounded-full border border-stone-200 hover:border-amber-600 hover:text-amber-600 transition bg-white shadow-sm">Breads</button>
+                    <button onclick="filterProducts('Cakes')" class="category-btn px-6 py-2 rounded-full border border-stone-200 hover:border-amber-600 hover:text-amber-600 transition bg-white shadow-sm">Cakes</button>
+                    <button onclick="filterProducts('Pastries')" class="category-btn px-6 py-2 rounded-full border border-stone-200 hover:border-amber-600 hover:text-amber-600 transition bg-white shadow-sm">Pastries</button>
+                    <button onclick="filterProducts('Puffs')" class="category-btn px-6 py-2 rounded-full border border-stone-200 hover:border-amber-600 hover:text-amber-600 transition bg-white shadow-sm">Puffs</button>
+                    <button onclick="filterProducts('Cookies')" class="category-btn px-6 py-2 rounded-full border border-stone-200 hover:border-amber-600 hover:text-amber-600 transition bg-white shadow-sm">Cookies</button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mb-12 max-w-xl" data-aos="fade-up">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"></i>
+                    <input type="text" id="search-input" onkeyup="searchProducts()" placeholder="Search for your favorite treats..." class="w-full pl-12 pr-6 py-4 rounded-2xl bg-white border border-stone-100 shadow-sm outline-none focus:ring-2 focus:ring-amber-600/20 transition">
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Products will be injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Track Order Section -->
+    <section id="track" class="py-24 bg-stone-900 text-white overflow-hidden">
+        <div class="container mx-auto px-6 relative">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-4xl md:text-5xl mb-6">Track Your Order</h2>
+                    <p class="text-stone-400">Enter your order ID or email address to check your status.</p>
+                </div>
+                <div class="bg-white/5 p-1 rounded-3xl backdrop-blur-md mb-12 flex" data-aos="fade-up">
+                    <input type="text" id="track-input" placeholder="Order ID or Email Address" class="flex-grow bg-transparent p-6 outline-none text-xl">
+                    <button onclick="trackOrder()" class="bg-amber-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-amber-700 transition">Track Now</button>
+                </div>
+                <div id="track-result" class="hidden" data-aos="fade-up">
+                    <!-- Tracking results injected here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div data-aos="fade-right">
+                <h2 class="text-4xl md:text-5xl mb-8">Visit Our Bakehouse</h2>
+                <div class="space-y-8">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center shrink-0"><i class="fa-solid fa-location-dot"></i></div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-2">Location</h4>
+                            <p class="text-stone-500">123 Artisan Lane, Baker's District<br>Mumbai, Maharashtra 400001</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center shrink-0"><i class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-2">Baking Hours</h4>
+                            <p class="text-stone-500">Mon - Sat: 7:00 AM - 8:00 PM<br>Sun: 8:00 AM - 4:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-10 rounded-3xl shadow-xl border border-stone-100" data-aos="fade-left">
+                <h3 class="text-2xl mb-6">Send us a message</h3>
+                <form id="contact-form" class="space-y-4">
+                    <input type="text" id="contact-name" placeholder="Your Name" required class="w-full p-4 bg-stone-50 rounded-xl outline-none focus:ring-2 focus:ring-amber-600/20">
+                    <input type="email" id="contact-email" placeholder="Email Address" required class="w-full p-4 bg-stone-50 rounded-xl outline-none focus:ring-2 focus:ring-amber-600/20">
+                    <textarea id="contact-message" placeholder="How can we help?" required class="w-full p-4 bg-stone-50 rounded-xl outline-none focus:ring-2 focus:ring-amber-600/20 h-32"></textarea>
+                    <button type="submit" class="w-full bg-stone-900 text-white py-4 rounded-xl font-bold hover:bg-amber-600 transition">Send Message</button>
+                </form>
+                <p id="contact-feedback" class="mt-4 text-sm text-stone-500 hidden"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-[450px] bg-white z-[60] shadow-2xl transform translate-x-full transition-transform duration-500 flex flex-col">
+        <div class="p-8 border-b flex justify-between items-center bg-stone-50">
+            <h3 class="text-2xl font-serif">Your Basket</h3>
+            <button onclick="toggleCart()" class="text-stone-400 hover:text-stone-900 transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
+        </div>
+        <div id="cart-items" class="flex-grow overflow-y-auto p-8 space-y-6">
+            <!-- Cart items injected here -->
+        </div>
+        <div class="p-8 border-t bg-stone-50 space-y-4">
+            <div class="flex justify-between text-lg">
+                <span>Subtotal</span>
+                <span id="cart-subtotal" class="font-bold">$0.00</span>
+            </div>
+            <div class="relative">
+                <input type="text" id="coupon-input" placeholder="Coupon Code (e.g. WELCOME10)" class="w-full p-3 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-amber-600">
+                <button onclick="applyCoupon()" class="absolute right-2 top-1/2 -translate-y-1/2 text-amber-600 font-bold text-sm">Apply</button>
+            </div>
+            <div class="flex justify-between text-amber-600 text-sm hidden" id="discount-row">
+                <span>Discount</span>
+                <span id="cart-discount">-$0.00</span>
+            </div>
+            <div class="flex justify-between text-xl font-bold pt-2">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button onclick="showCheckout()" class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold hover:bg-amber-950 transition-all shadow-lg">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-[70] hidden bg-stone-900/40 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+            <div class="md:w-1/2 p-8 overflow-y-auto">
+                <h3 class="text-2xl font-serif mb-6">Checkout</h3>
+                <form id="checkout-form" class="space-y-4">
+                    <input type="text" id="cust-name" placeholder="Full Name" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20">
+                    <input type="email" id="cust-email" placeholder="Email Address" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20">
+                    <input type="tel" id="cust-phone" placeholder="Phone Number" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20">
+                    <textarea id="cust-address" placeholder="Delivery Address" required class="w-full p-4 bg-stone-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-amber-600/20 h-24"></textarea>
+                    
+                    <div class="pt-4">
+                        <p class="text-sm font-bold text-stone-400 mb-3 uppercase">Payment Method</p>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="Card" checked class="hidden peer">
+                                <div class="p-3 border rounded-xl text-center peer-checked:border-amber-600 peer-checked:text-amber-600 transition">
+                                    <i class="fa-solid fa-credit-card mb-1 block"></i><span class="text-[10px] font-bold">Card</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="Bank" class="hidden peer">
+                                <div class="p-3 border rounded-xl text-center peer-checked:border-amber-600 peer-checked:text-amber-600 transition">
+                                    <i class="fa-solid fa-building-columns mb-1 block"></i><span class="text-[10px] font-bold">Bank</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="COD" class="hidden peer">
+                                <div class="p-3 border rounded-xl text-center peer-checked:border-amber-600 peer-checked:text-amber-600 transition">
+                                    <i class="fa-solid fa-hand-holding-dollar mb-1 block"></i><span class="text-[10px] font-bold">COD</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-amber-600 text-white py-4 rounded-xl font-bold mt-6 shadow-lg hover:bg-amber-700 transition">Place Order</button>
+                </form>
+            </div>
+            <div class="md:w-1/2 bg-stone-50 p-8 flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="font-bold uppercase text-stone-400 text-sm tracking-widest">Summary</h4>
+                    <button onclick="hideCheckout()" class="text-stone-400 hover:text-stone-900"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="checkout-summary" class="flex-grow space-y-4 overflow-y-auto mb-6">
+                    <!-- Summary items -->
+                </div>
+                <div class="border-t pt-4 space-y-2">
+                    <div class="flex justify-between text-stone-500">
+                        <span>Items</span>
+                        <span id="summary-subtotal">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-stone-500 hidden" id="summary-discount-row">
+                        <span>Discount</span>
+                        <span id="summary-discount">-$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-xl font-bold pt-2">
+                        <span>Total</span>
+                        <span id="summary-total">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="success-overlay" class="fixed inset-0 z-[100] hidden bg-white flex items-center justify-center text-center p-6">
+        <div data-aos="zoom-in">
+            <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8 text-4xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h2 class="text-4xl font-serif mb-4">Order Received!</h2>
+            <p class="text-stone-500 mb-8 max-w-md mx-auto">Thank you for your order. We've started preparing your fresh treats. You can track your order using your email address.</p>
+            <button onclick="location.reload()" class="bg-amber-900 text-white px-10 py-4 rounded-xl font-bold shadow-lg">Back to Home</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        const API_URL = window.location.origin;
+        let allProducts = [];
+        let cart = [];
+        let currentDiscount = 0;
+        let activeCategory = 'All';
+
+        // Init
+        $(document).ready(() => {
+            AOS.init({ duration: 1000, once: true });
+            loadProducts();
+            loadCart();
+        });
+
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_URL}/api/products`);
+                allProducts = await response.json();
+                applyFilters();
+            } catch (err) { console.error(err); }
+        }
+
+        function renderProducts(products) {
+            const container = $('#product-grid');
+            container.empty();
+            products.forEach((p, i) => {
+                container.append(`
+                    <div class="product-card group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-stone-100" data-aos="fade-up" data-aos-delay="${i * 50}">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${p.name}">
+                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <button onclick="addToCart(${p.id})" class="bg-white text-amber-900 px-6 py-3 rounded-full font-bold shadow-lg transform translate-y-10 group-hover:translate-y-0 transition-all duration-500">Add to Basket</button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-amber-600 text-[10px] font-bold uppercase tracking-widest mb-2 block">${p.category}</span>
+                            <h3 class="text-xl mb-2">${p.name}</h3>
+                            <p class="text-2xl font-bold text-stone-800">$${p.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function filterProducts(category) {
+            activeCategory = category;
+            $('.category-btn').removeClass('active border-amber-600 text-amber-600');
+            $(`.category-btn:contains('${category}')`).addClass('active border-amber-600 text-amber-600');
+            applyFilters();
+        }
+
+        function searchProducts() {
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const term = $('#search-input').val().toLowerCase();
+            const filtered = allProducts.filter(p => {
+                const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+                const matchesSearch = p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term);
+                return matchesCategory && matchesSearch;
+            });
+            renderProducts(filtered);
+        }
+
+        function showToast(msg) {
+            $('#toast-msg').text(msg);
+            $('#toast').addClass('show');
+            setTimeout(() => $('#toast').removeClass('show'), 3000);
+        }
+
+        function addToCart(id) {
+            const product = allProducts.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            if (existing) existing.qty++;
+            else cart.push({ ...product, qty: 1 });
+            updateCart();
+            showToast('Added to your basket!');
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCart();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) removeFromCart(id);
+                else updateCart();
+            }
+        }
+
+        function updateCart() {
+            const container = $('#cart-items');
+            container.empty();
+            let subtotal = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                count += item.qty;
+                container.append(`
+                    <div class="flex gap-4 items-center">
+                        <img src="${item.image}" class="w-20 h-20 object-cover rounded-xl shadow-sm">
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-stone-800">${item.name}</h4>
+                            <p class="text-amber-600 font-bold">$${item.price.toFixed(2)}</p>
+                            <div class="flex items-center space-x-3 mt-2">
+                                <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 border rounded-full flex items-center justify-center hover:bg-stone-100 transition"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                                <span class="text-sm font-bold">${item.qty}</span>
+                                <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 border rounded-full flex items-center justify-center hover:bg-stone-100 transition"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-stone-300 hover:text-red-500 transition"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `);
+            });
+
+            $('#cart-count').text(count);
+            $('#cart-subtotal').text(`$${subtotal.toFixed(2)}`);
+            const total = subtotal - currentDiscount;
+            $('#cart-total').text(`$${Math.max(0, total).toFixed(2)}`);
+            if (currentDiscount > 0) {
+                $('#discount-row').removeClass('hidden');
+                $('#cart-discount').text(`-$${currentDiscount.toFixed(2)}`);
+            } else $('#discount-row').addClass('hidden');
+            localStorage.setItem('bakery_cart', JSON.stringify(cart));
+        }
+
+        function applyCoupon() {
+            const code = $('#coupon-input').val().toUpperCase();
+            if (code === 'WELCOME10') currentDiscount = 10.00;
+            else if (code === 'FRESH20') currentDiscount = parseFloat($('#cart-subtotal').text().replace('$', '')) * 0.20;
+            else return alert("Invalid coupon code.");
+            updateCart();
+            showToast('Coupon Applied!');
+        }
+
+        function toggleCart() { $('#cart-sidebar').toggleClass('translate-x-full'); }
+        function showCheckout() {
+            if (cart.length === 0) return alert("Your basket is empty!");
+            const summary = $('#checkout-summary');
+            summary.empty();
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                summary.append(`
+                    <div class="flex justify-between items-center text-sm">
+                        <div class="flex gap-3 items-center">
+                            <span class="w-6 h-6 bg-stone-200 rounded-md flex items-center justify-center font-bold text-[10px]">${item.qty}x</span>
+                            <span>${item.name}</span>
+                        </div>
+                        <span class="font-bold">$${(item.price * item.qty).toFixed(2)}</span>
+                    </div>
+                `);
+            });
+            $('#summary-subtotal').text(`$${subtotal.toFixed(2)}`);
+            if (currentDiscount > 0) {
+                $('#summary-discount-row').removeClass('hidden');
+                $('#summary-discount').text(`-$${currentDiscount.toFixed(2)}`);
+            } else $('#summary-discount-row').addClass('hidden');
+            $('#summary-total').text(`$${(subtotal - currentDiscount).toFixed(2)}`);
+            $('#checkout-modal').removeClass('hidden');
+        }
+
+        function hideCheckout() { $('#checkout-modal').addClass('hidden'); }
+
+        $('#checkout-form').submit(async function(e) {
+            e.preventDefault();
+            const data = {
+                name: $('#cust-name').val(),
+                email: $('#cust-email').val(),
+                phone: $('#cust-phone').val(),
+                address: $('#cust-address').val(),
+                payment: $('input[name="payment"]:checked').val(),
+                total: parseFloat($('#summary-total').text().replace('$', '')),
+                coupon: $('#coupon-input').val()
+            };
+
+            try {
+                const res = await $.ajax({
+                    url: `${API_URL}/api/orders/save`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data)
+                });
+                if (res.status === 'ok') {
+                    localStorage.removeItem('bakery_cart');
+                    cart = [];
+                    currentDiscount = 0;
+                    updateCart();
+                    hideCheckout();
+                    $('#success-overlay').removeClass('hidden');
+                }
+            } catch (err) { alert('Checkout failed. Please try again.'); }
+        });
+
+        async function trackOrder() {
+            const input = $('#track-input').val().trim();
+            if (!input) return;
+            try {
+                const found = await $.ajax({
+                    url: `${API_URL}/api/orders/track`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ lookup: input })
+                });
+                const container = $('#track-result');
+                container.empty().removeClass('hidden');
+                if (found.length > 0) {
+                    found.reverse().forEach(o => {
+                        container.append(`
+                            <div class="bg-white/10 p-8 rounded-3xl mb-4 border border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                                <div>
+                                    <p class="text-amber-400 font-bold text-xs uppercase tracking-widest mb-1">Order #${o.id}</p>
+                                    <h4 class="text-2xl font-serif">${o.name}</h4>
+                                    <p class="text-stone-400 text-sm mt-1">${new Date(o.created_at).toLocaleDateString()}</p>
+                                </div>
+                                <div class="text-center md:text-right">
+                                    <span class="px-6 py-2 bg-amber-600 rounded-full font-bold text-sm uppercase tracking-widest">${o.status}</span>
+                                    <p class="text-2xl font-bold mt-3">$${o.total.toFixed(2)}</p>
+                                </div>
+                            </div>
+                        `);
+                    });
+                } else {
+                    container.append('<p class="text-center text-stone-400">No orders found for this information.</p>');
+                }
+            } catch (err) {
+                $('#track-result').removeClass('hidden').html('<p class="text-center text-red-300">Unable to fetch order details right now.</p>');
+            }
+        }
+
+        $('#contact-form').submit(async function(e) {
+            e.preventDefault();
+            const feedback = $('#contact-feedback');
+            feedback.addClass('hidden').removeClass('text-green-600 text-red-500');
+            try {
+                const res = await $.ajax({
+                    url: `${API_URL}/api/contact/save`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        name: $('#contact-name').val().trim(),
+                        email: $('#contact-email').val().trim(),
+                        message: $('#contact-message').val().trim()
+                    })
+                });
+                if (res.status === 'ok') {
+                    $('#contact-form')[0].reset();
+                    feedback.text('Your message has been sent successfully. Our team will contact you soon.').addClass('text-green-600').removeClass('hidden');
+                    showToast('Message sent successfully!');
+                    return;
+                }
+                throw new Error('Contact save failed');
+            } catch (err) {
+                feedback.text('Message delivery failed. Please try again.').addClass('text-red-500').removeClass('hidden');
+            }
+        });
+
+        function loadCart() {
+            const saved = localStorage.getItem('bakery_cart');
+            if (saved) {
+                cart = JSON.parse(saved);
+                updateCart();
+            }
+        }
+    </script>
+</body>
+</html>
